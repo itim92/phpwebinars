@@ -16,6 +16,10 @@
         {*            <input type="text" name="name" required value="{$product.name}">*}
     </div>
     <div class="form-group">
+        <label>Ссылка на изображение:</label>
+        <input class="form-control" type="text" name="image_url">
+    </div>
+    <div class="form-group">
         <label>Фото товара:</label>
         <input class="form-control" multiple type="file" name="images[]">
     </div>

@@ -18,6 +18,7 @@
             <ul class="nav nav-pills">
                 <li class="nav-item"><a class="nav-link" href="/products/">Товары</a></li>
                 <li class="nav-item"><a class="nav-link" href="/categories/">Категории</a></li>
+                <li class="nav-item"><a class="nav-link" href="/import/index">Импорт товаров</a></li>
             </ul>
         </div>
     </div>

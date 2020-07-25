@@ -45,4 +45,10 @@ class Category {
         ];
     }
 
+    public static function getByName(string $categoryName)
+    {
+        $query = "SELECT * FROM categories WHERE name = '$categoryName'";
+        return Db::fetchRow($query);
+    }
+
 }

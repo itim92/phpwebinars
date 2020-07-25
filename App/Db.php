@@ -4,6 +4,9 @@
 class Db
 {
 
+    /**
+     * @var string
+     */
     private static $host = '127.0.0.1';
     private static $database = 'phpwebinars';
     private static $username = 'root';
@@ -136,6 +139,11 @@ class Db
         $connect = static::getConnect();
 
         return mysqli_insert_id($connect);
+    }
+
+    public static function escape(string $value) {
+        $connect = static::getConnect();
+        return mysqli_real_escape_string($connect, $value);
     }
 
     private static function connect()

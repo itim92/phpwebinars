@@ -76,4 +76,13 @@ class Product
             'category_id' => Request::getIntFromPost('category_id'),
         ];
     }
+
+    public static function getByField(string $mainField, string $value)
+    {
+        $mainField = Db::escape($mainField);
+        $value = Db::escape($value);
+
+        $query = "SELECT * FROM products WHERE `$mainField` = '$value'";
+        return Db::fetchRow($query);
+    }
 }
