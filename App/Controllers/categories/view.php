@@ -1,5 +1,9 @@
 <?php
 
+use App\Category;
+use App\Product;
+use App\Request;
+
 $category_id = Request::getIntFromGet('id');
 
 $category = Category::getById($category_id);

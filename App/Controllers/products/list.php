@@ -1,5 +1,8 @@
 <?php
 
+use App\Product;
+use App\Request;
+
 $current_page = Request::getIntFromGet('p', 1);
 
 $limit = 10;

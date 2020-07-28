@@ -1,4 +1,7 @@
 <?php
+namespace App;
+
+use App\Db\Db;
 
 class Product
 {

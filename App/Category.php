@@ -1,5 +1,9 @@
 <?php
 
+namespace App;
+
+use App\Db\Db;
+
 class Category {
     public static function getList()
     {

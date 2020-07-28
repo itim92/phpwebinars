@@ -1,5 +1,7 @@
 <?php
 
+use App\Category;
+
 require_once 'config.php';
 
 $path_info = $_SERVER['PATH_INFO'] ?? '/';
