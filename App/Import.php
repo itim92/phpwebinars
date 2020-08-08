@@ -49,9 +49,9 @@ class Import
             ];
 
             $categoryName = $productData['category_name'];
-            $category = Category::getByName($categoryName);
+            $category = CategoryService::getByName($categoryName);
             if (empty($category)) {
-                $categoryId = Category::add([
+                $categoryId = CategoryService::add([
                     'name' => $categoryName,
                 ]);
             } else {
@@ -60,14 +60,14 @@ class Import
 
             $product['category_id'] = $categoryId;
 
-            $targetProduct = Product::getByField($mainField, $product[$mainField]);
+            $targetProduct = ProductService::getByField($mainField, $product[$mainField]);
 
             if (empty($targetProduct)) {
-                $productId = Product::add($product);
+                $productId = ProductService::add($product);
             } else {
                 $productId = $targetProduct['id'];
                 $targetProduct = array_merge($targetProduct, $product);
-                Product::updateById($productId, $targetProduct);
+                ProductService::updateById($productId, $targetProduct);
             }
 
             $productData['image_urls'] = explode("\n", $productData['image_urls']);
@@ -79,7 +79,7 @@ class Import
             });
 
             foreach ($productData['image_urls'] as $imageUrl) {
-                ProductImage::uploadImageByUrl($productId, $imageUrl);
+                ProductImageService::uploadImageByUrl($productId, $imageUrl);
             }
         }
 

@@ -4,3 +4,6 @@
 var
 public/upload/*
 /vendor/
+
+
+composer.lock

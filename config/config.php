@@ -15,12 +15,6 @@ if (!file_exists(APP_UPLOAD_PRODUCT_DIR)) {
     mkdir(APP_UPLOAD_PRODUCT_DIR);
 }
 
-$smarty = new Smarty();
-
-$smarty->template_dir = __DIR__ . '/../templates';
-$smarty->compile_dir = __DIR__ . '/../var/compile';
-$smarty->cache_dir = __DIR__ . '/../var/cache';
-$smarty->config_dir = __DIR__ . '/../var/config';
 
 function deleteDir($dir)
 {

@@ -5,7 +5,7 @@ namespace App;
 class Response
 {
 
-    public static function redirect(string $url = '/')
+    public function redirect(string $url = '/')
     {
         header('Location: ' . $url);
         exit;

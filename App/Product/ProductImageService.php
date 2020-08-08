@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Product;
 
 use App\Db\Db;
 
-class ProductImage
+class ProductImageService
 {
 
     private const IMAGES_MIME_DICT = [
@@ -19,19 +19,19 @@ class ProductImage
         'image/webp'    => '.webp',
     ];
 
-    public static function getById(int $id)
+    public function getById(int $id)
     {
         $query = "SELECT * FROM product_images WHERE id = $id";
         return Db::fetchRow($query);
     }
 
-    public static function findByFilenameInProduct(int $productId, string $filename)
+    public function findByFilenameInProduct(int $productId, string $filename)
     {
         $query = "SELECT * FROM product_images WHERE product_id = $productId AND name = '$filename'";
         return Db::fetchRow($query);
     }
 
-    public static function updateById(int $id, array $productImage): int
+    public function updateById(int $id, array $productImage): int
     {
         if (isset($productImage['id'])) {
             unset($productImage['id']);
@@ -40,7 +40,7 @@ class ProductImage
         return Db::update('product_images', $productImage, "id = $id");
     }
 
-    public static function add(array $productImage): int
+    public function add(array $productImage): int
     {
         if (isset($productImage['id'])) {
             unset($productImage['id']);
@@ -49,9 +49,9 @@ class ProductImage
         return Db::insert('product_images', $productImage);
     }
 
-    public static function deleteById(int $id)
+    public function deleteById(int $id)
     {
-        $productImage = static::getById($id);
+        $productImage = $this->getById($id);
         $filepath = APP_PUBLIC_DIR . $productImage['path'];
 
         if (file_exists($filepath)) {
@@ -61,7 +61,7 @@ class ProductImage
         return Db::delete('product_images', "id = $id");
     }
 
-//    public static function getDataFromPost()
+//    public function getDataFromPost()
 //    {
 //        return [
 //            'id'          => Request::getIntFromPost('id', false),
@@ -73,12 +73,12 @@ class ProductImage
 //            'category_id' => Request::getIntFromPost('category_id'),
 //        ];
 //    }
-    public static function deleteByProductId(int $productId)
+    public function deleteByProductId(int $productId)
     {
         return Db::delete('product_images', "product_id = $productId");
     }
 
-    public static function uploadImages(int $productId, array $files)
+    public function uploadImages(int $productId, array $files)
     {
 
         $imageNames = $files['name'] ?? [];
@@ -87,7 +87,7 @@ class ProductImage
         $imagesCount = 0;
 
         for ($i = 0; $i < count($imageNames); $i++) {
-            $result = static::uploadImage($productId, [
+            $result = $this->uploadImage($productId, [
                 'name'     => $imageNames[$i],
                 'tmp_name' => $imageTmpNames[$i],
             ]);
@@ -100,7 +100,7 @@ class ProductImage
         return $imagesCount;
     }
 
-    public static function uploadImage(int $productId, array $file)
+    public function uploadImage(int $productId, array $file)
     {
 
         $imageName = basename(trim($file['name']));
@@ -111,13 +111,13 @@ class ProductImage
 
         $imageTmpName = $file['tmp_name'];
 
-        $filename = static::getUniqueUploadImageName($productId, $imageName);
+        $filename = $this->getUniqueUploadImageName($productId, $imageName);
 
-        $path = static::getUploadDirForProduct($productId);
+        $path = $this->getUploadDirForProduct($productId);
         $imagePath = $path . '/' . $filename;
 
         move_uploaded_file($imageTmpName, $imagePath);
-        ProductImage::add([
+        ProductImageService::add([
             'product_id' => $productId,
             'name'       => $filename,
             'path'       => str_replace(APP_PUBLIC_DIR, '', $imagePath),
@@ -127,13 +127,13 @@ class ProductImage
         return true;
     }
 
-    protected static function getUniqueUploadImageName(int $productId, string $imageName)
+    protected function getUniqueUploadImageName(int $productId, string $imageName)
     {
         $filename = $imageName;
         $counter = 0;
 
         while (true) {
-            $duplicateImage = ProductImage::findByFilenameInProduct($productId, $filename);
+            $duplicateImage = ProductImageService::findByFilenameInProduct($productId, $filename);
             if (empty($duplicateImage)) {
                 break;
             }
@@ -148,20 +148,20 @@ class ProductImage
         return $filename;
     }
 
-    public static function uploadImageByUrl(int $productId, string $imageUrl)
+    public function uploadImageByUrl(int $productId, string $imageUrl)
     {
         if (empty($imageUrl)) {
             return false;
         }
 
-        $imageMetaData = static::getMetaDataByUrl($imageUrl);
+        $imageMetaData = $this->getMetaDataByUrl($imageUrl);
         $mimeType = $imageMetaData['mimeType'];
 
         if (is_null($mimeType)) {
             return false;
         }
 
-        $imageExt = static::getExtensionByMimeType($mimeType);
+        $imageExt = $this->getExtensionByMimeType($mimeType);
         if (is_null($imageExt)) {
             return false;
         }
@@ -171,12 +171,12 @@ class ProductImage
             return false;
         }
 
-        $duplicateProductImage = ProductImage::getByProductIdAndSize($productId, $size);
+        $duplicateProductImage = ProductImageService::getByProductIdAndSize($productId, $size);
         if (!empty($duplicateProductImage)) {
             return false;
         }
 
-        $productImageId = ProductImage::add([
+        $productImageId = ProductImageService::add([
             'product_id' => $productId,
             'name'       => '',
             'path'       => '',
@@ -184,12 +184,12 @@ class ProductImage
         ]);
         $filename = $productId . '_' . $productImageId . '_upload' . time() . $imageExt;
 
-        $path = static::getUploadDirForProduct($productId);
+        $path = $this->getUploadDirForProduct($productId);
         $imagePath = $path . '/' . $filename;
 
         file_put_contents($imagePath, fopen($imageUrl, 'r'));
 
-        ProductImage::updateById($productImageId, [
+        ProductImageService::updateById($productImageId, [
             'name' => $filename,
             'path' => str_replace(APP_PUBLIC_DIR, '', $imagePath),
         ]);
@@ -197,12 +197,12 @@ class ProductImage
         return true;
     }
 
-    protected static function getExtensionByMimeType(string $mimeType)
+    protected function getExtensionByMimeType(string $mimeType)
     {
         return static::IMAGES_MIME_DICT[$mimeType] ?? null;
     }
 
-    protected static function getMetaDataByUrl(string $url)
+    protected function getMetaDataByUrl(string $url)
     {
         $headers = @get_headers($url);
 
@@ -252,13 +252,13 @@ class ProductImage
         return $metaData;
     }
 
-    public static function getListByProductId(int $productId)
+    public function getListByProductId(int $productId)
     {
         $query = "SELECT * FROM product_images WHERE product_id = $productId";
         return Db::fetchAll($query);
     }
 
-    protected static function getUploadDirForProduct(int $productId)
+    protected function getUploadDirForProduct(int $productId)
     {
         $path = APP_UPLOAD_PRODUCT_DIR . '/' . $productId;
 
@@ -269,7 +269,7 @@ class ProductImage
         return $path;
     }
 
-    private static function getByProductIdAndSize(int $productId, int $size)
+    private function getByProductIdAndSize(int $productId, int $size)
     {
         $query = "SELECT * FROM product_images WHERE product_id = $productId AND size = $size";
         return Db::fetchRow($query);
