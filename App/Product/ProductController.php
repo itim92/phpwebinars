@@ -21,6 +21,12 @@ class ProductController
         $this->route = $route;
     }
 
+    /**
+     * @param ProductRepository $productRepository
+     * @param Request $request
+     *
+     * @route("/product_list")
+     */
     public function list(ProductRepository $productRepository, Request $request)
     {
 
@@ -39,6 +45,16 @@ class ProductController
         Renderer::getSmarty()->display('products/index.tpl');
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param ProductService $productService
+     * @param ProductRepository $productRepository
+     * @param ProductImageService $productImageService
+     * @param CategoryService $categoryService
+     *
+     * @route("/product_edit/{id}")
+     */
     public function edit(
         Request $request,
         Response $response,

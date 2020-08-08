@@ -24,6 +24,14 @@ class CategoryController
     }
 
 
+    /**
+     * @route("/sample")
+     */
+    public function sample() {
+        echo "hello";
+    }
+
+
     public function add()
     {
         if (Request::isPost()) {
