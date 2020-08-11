@@ -12,6 +12,8 @@ use App\Request;
 use App\Router\Exception\MethodDoesNotExistException;
 use App\Router\Exception\NotFoundException;
 use ReflectionClass;
+use ReflectionException;
+use ReflectionObject;
 use ReflectionParameter;
 
 class Dispatcher
@@ -47,7 +49,7 @@ class Dispatcher
 
 //        $controllerFile = APP_DIR . '/App/Product/ProductController.php';
 
-        $files = $this->scanDir( APP_DIR . '/App');
+        $files = $this->scanDir(APP_DIR . '/App');
 
         foreach ($files as $filePath) {
             if (strpos($filePath, 'Controller.php') === false) {
@@ -62,10 +64,11 @@ class Dispatcher
         return $routes;
     }
 
-    protected function scanDir(string $dirname) {
+    protected function scanDir(string $dirname)
+    {
         $list = scandir($dirname);
 
-        $list = array_filter($list, function($item) {
+        $list = array_filter($list, function ($item) {
             return !in_array($item, ['.', '..']);
         });
 
@@ -84,6 +87,10 @@ class Dispatcher
         return $filenames;
     }
 
+    /**
+     * @return mixed|null
+     * @throws ReflectionException
+     */
     public function dispatch()
     {
         $request = new Request();
@@ -97,42 +104,25 @@ class Dispatcher
         }
 
         try {
-
-//            $container = new Container();
             $controllerClass = $route->getController();
 
             if (is_null($controllerClass)) {
                 throw new NotFoundException();
             }
 
-            $controller = new $controllerClass($route);
+            $container = new Container();
+            $controller = $container->getController($controllerClass);
+
+
+            $renderer = $container->get(Renderer::class);
+            $container->setProperty($controller, 'renderer', $renderer);
+            $container->setProperty($controller, 'route', $route);
 
             $controllerMethod = $route->getMethod();
 
             if (method_exists($controller, $controllerMethod)) {
-
-                $reflectionClass = new ReflectionClass($controllerClass);
-                $reflectionMethod = $reflectionClass->getMethod($controllerMethod);
-
-                $reflectionParamaters = $reflectionMethod->getParameters();
-
-                $arguments = [];
-
-                foreach ($reflectionParamaters as $parameter) {
-                    $parameterName = $parameter->getName();
-                    $parameterType = $parameter->getType();
-
-                    assert($parameterType instanceof \ReflectionNamedType);
-                    $className = $parameterType->getName();
-
-                    if (class_exists($className)) {
-                        $arguments[$parameterName] = new $className();
-                    }
-                }
-
-                return call_user_func_array([$controller, $controllerMethod], $arguments);
+                return $container->call($controller, $controllerMethod);
             }
-
 
             throw new MethodDoesNotExistException();
         } catch (NotFoundException | MethodDoesNotExistException $e) {
@@ -162,11 +152,12 @@ class Dispatcher
         exit;
     }
 
-    private function getRoutesByControllerFile(string $filePath) {
+    private function getRoutesByControllerFile(string $filePath)
+    {
         $routes = [];
 
-        $controllerClassName = str_replace([APP_DIR . '/', '.php'] ,'', $filePath);
-        $controllerClassName = str_replace('/' ,'\\', $controllerClassName);
+        $controllerClassName = str_replace([APP_DIR . '/', '.php'], '', $filePath);
+        $controllerClassName = str_replace('/', '\\', $controllerClassName);
 
         $reflectionClass = new ReflectionClass($controllerClassName);
         $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -176,13 +167,13 @@ class Dispatcher
                 continue;
             }
 
-            $docComment = (string) $reflectionMethod->getDocComment();
+            $docComment = (string)$reflectionMethod->getDocComment();
 
             $docComment = str_replace(['/**', '*/'], '', $docComment);
             $docComment = trim($docComment);
             $docCommentArray = explode("\n", $docComment);
 
-            $docCommentArray = array_map(function($item) {
+            $docCommentArray = array_map(function ($item) {
                 $item = trim($item);
 
                 $position = strpos($item, '*');

@@ -1,10 +1,8 @@
 + Подключим Composer
 + Рефакторинг на объекты (Exception)
-Роутинг
-Dependency Injection (Reflection Api)
++ Роутинг
++ Dependency Injection (Reflection Api)
 
-
-Авторизация
 Корзина
 Заказы
 Фильтр / Поиск по магазину
