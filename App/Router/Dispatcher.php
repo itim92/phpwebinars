@@ -15,9 +15,23 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 use ReflectionParameter;
+use Smarty;
 
 class Dispatcher
 {
+
+    /**
+     * @var Container
+     */
+    private $di;
+
+    public function __construct(Container $di)
+    {
+
+        $this->di = $di;
+    }
+
+
     protected $routes = [
         '/products/'             => [ProductController::class, 'list'],
         '/products/edit'         => [ProductController::class, 'edit'],
@@ -110,18 +124,19 @@ class Dispatcher
                 throw new NotFoundException();
             }
 
-            $container = new Container();
-            $controller = $container->getController($controllerClass);
+            $di = $this->getDi();
+            $controller = $di->get($controllerClass, [
+                Route::class => $route,
+            ]);
 
-
-            $renderer = $container->get(Renderer::class);
-            $container->setProperty($controller, 'renderer', $renderer);
-            $container->setProperty($controller, 'route', $route);
+//            $renderer = $di->get(Renderer::class);
+//            $di->setProperty($controller, 'renderer', $renderer);
+//            $di->setProperty($controller, 'route', $route);
 
             $controllerMethod = $route->getMethod();
 
             if (method_exists($controller, $controllerMethod)) {
-                return $container->call($controller, $controllerMethod);
+                return $di->call($controller, $controllerMethod);
             }
 
             throw new MethodDoesNotExistException();
@@ -167,23 +182,7 @@ class Dispatcher
                 continue;
             }
 
-            $docComment = (string)$reflectionMethod->getDocComment();
-
-            $docComment = str_replace(['/**', '*/'], '', $docComment);
-            $docComment = trim($docComment);
-            $docCommentArray = explode("\n", $docComment);
-
-            $docCommentArray = array_map(function ($item) {
-                $item = trim($item);
-
-                $position = strpos($item, '*');
-                if ($position === 0) {
-                    $item = substr($item, 1);
-                }
-
-                return trim($item);
-            }, $docCommentArray);
-
+            $docCommentArray = $this->getDi()->parseDocComment($reflectionMethod);
 
             foreach ($docCommentArray as $docString) {
                 $isRoute = strpos($docString, '@route(') === 0;
@@ -198,7 +197,14 @@ class Dispatcher
         }
 
         return $routes;
+    }
 
+    /**
+     * @return Container
+     */
+    public function getDi(): Container
+    {
+        return $this->di;
     }
 
 }
