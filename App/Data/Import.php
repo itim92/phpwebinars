@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Data;
 
 use App\Db\Db;
-use App\Product\ProductImageService;
-use App\Product\ProductService;
+use App\Data\Product\ProductImageService;
+use App\Data\Product\ProductService;
 
 class Import
 {

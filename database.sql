@@ -31,9 +31,16 @@ CREATE TABLE `tasks_queue`
     `task`       varchar(255) NOT NULL                       DEFAULT '',
     `params`     varchar(255) NOT NULL,
     `status`     ENUM ('new', 'in_process', 'done', 'error') DEFAULT 'new',
-    `created_at`  DATETIME     NOT NULL,
+    `created_at` DATETIME     NOT NULL,
     `updated_at` DATETIME     NOT NULL                       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 );
 
-ALTER TABLE tasks_queue CHANGE `create_at` `created_at`  DATETIME     NOT NULL;
+CREATE TABLE `users`
+(
+    `id`       int unsigned NOT NULL AUTO_INCREMENT,
+    `name`     varchar(255) NOT NULL DEFAULT '',
+    `email`    varchar(255) NOT NULL DEFAULT '',
+    `password` varchar(255) NOT NULL DEFAULT '',
+    PRIMARY KEY (`id`)
+);

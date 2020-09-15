@@ -260,6 +260,11 @@ class ProductImageService
 
     protected function getUploadDirForProduct(int $productId)
     {
+
+        if (!file_exists(APP_UPLOAD_PRODUCT_DIR)) {
+            mkdir(APP_UPLOAD_PRODUCT_DIR);
+        }
+
         $path = APP_UPLOAD_PRODUCT_DIR . '/' . $productId;
 
         if (!file_exists($path)) {

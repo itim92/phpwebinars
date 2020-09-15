@@ -5,8 +5,7 @@ namespace App\Data\Queue;
 use App\Controller\AbstractController;
 use App\Renderer\Renderer;
 use App\Http\Request;
-use App\Http\Response;
-use App\TasksQueue;
+use App\Data\TasksQueue;
 
 class QueueController extends AbstractController
 {
@@ -27,6 +26,6 @@ class QueueController extends AbstractController
 
         TasksQueue::runById($id);
 
-        $this->redirect('/queue/list');
+        return $this->redirect('/queue/list');
     }
 }

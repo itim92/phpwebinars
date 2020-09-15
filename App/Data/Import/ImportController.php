@@ -2,12 +2,12 @@
 
 namespace App\Data\Import;
 
+use App\Controller\AbstractController;
 use App\Data\Import;
 use App\Renderer\Renderer;
-use App\Http\Response;
 use App\Data\TasksQueue;
 
-class ImportController
+class ImportController extends AbstractController
 {
 
     public function index()
@@ -42,9 +42,7 @@ class ImportController
 
         TasksQueue::addTask($taskName, $task, $taskParams);
 
-        Response::redirect('/queue/list');
-        exit;
-
+        return $this->redirect('/queue/list');
         /**
          * 1. Загрузка файла с предварительными настройками
          * 2. Анализ файла на основе предварительных настроек
