@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Renderer;
+use App\Http\Response;
+use App\Renderer\Renderer;
 use App\Router\Route;
 
 abstract class AbstractController
@@ -10,7 +11,7 @@ abstract class AbstractController
 
     /**
      * @var Renderer
-     * @onInit(App\Renderer)
+     * @onInit(App\Renderer\Renderer)
      */
     protected $renderer;
 
@@ -20,19 +21,21 @@ abstract class AbstractController
      */
     protected $route;
 
+    /**
+     * @var Response
+     * @onInit(App\Http\Response)
+     */
+    protected $response;
+
     public function render(string $template, array $data = [])
     {
-//        $smarty = Renderer::getSmarty();
-//
-//        foreach ($data as $key => $value) {
-//            $smarty->assign($key, $value);
-//        }
-//
-//        return $smarty->display($template);
-        $this->renderer->render($template, $data);
+        $body = $this->renderer->render($template, $data);
+        $this->response->setBody($body);
+
+        return $this->response;
     }
 
     public function redirect(string $url) {
-
+        return $this->response->setRedirectUrl($url);
     }
 }

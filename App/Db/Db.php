@@ -9,7 +9,7 @@ class Db
     /**
      * @var string
      */
-    private static $host = '127.0.0.1';
+    private static $host = 'localhost';
     private static $database = 'phpwebinars';
     private static $username = 'root';
     private static $password = '';

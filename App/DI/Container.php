@@ -233,7 +233,7 @@ class Container
     protected function createInstance(string $className)
     {
         if (isset($this->factories[$className])) {
-            return $this->factories[$className]();
+            return $this->factories[$className]($this);
         }
 
         $reflectionClass = new ReflectionClass($className);
