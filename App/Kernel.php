@@ -5,6 +5,8 @@ namespace App;
 
 
 use App\Config\Config;
+use App\DI\Container;
+use App\Middleware\IMiddleware;
 use App\Router\Dispatcher;
 use App\Router\Exception\ControllerDoesNotExistException;
 use App\Router\Exception\ExpectToRecieveResponseObjectException;
@@ -25,6 +27,7 @@ class Kernel
 
         $di = new DI\Container();
         $this->di = $di;
+        $di->setMapping(Container::class, $di);
 
         $di->singletone(Config::class, function() {
             $configDir = 'config';
@@ -55,6 +58,16 @@ class Kernel
     public function run()
     {
         try {
+            $config = $this->di->get(Config::class);
+
+            foreach ($config->di->middlewares as $classname) {
+                $middleware = $this->di->get($classname);
+
+                if ($middleware instanceof IMiddleware) {
+                    $middleware->run();
+                }
+            }
+
             $response = (new Dispatcher($this->di))->dispatch();
 
             echo $response;

@@ -54,6 +54,19 @@ class Container
 
     /**
      * @param string $className
+     * @param array|null $dependencyMapping
+     * @return object|null
+     */
+    public function getOrNull(string $className, array $dependencyMapping = null) {
+        try {
+            return $this->get($className, $dependencyMapping);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $className
      * @param callable $factory
      */
     public function factory(string $className, callable $factory)
@@ -83,6 +96,21 @@ class Container
     public function isSingletone(string $className)
     {
         return array_key_exists($className, $this->singletones);
+    }
+
+    /**
+     * @param string $key
+     * @param $value
+     * @return $this
+     */
+    public function setMapping(string $key, $value) {
+        if (!is_object($value)) {
+            return $this;
+        }
+
+        $this->dependencyMapping[$key] = $value;
+
+        return $this;
     }
 
     /**

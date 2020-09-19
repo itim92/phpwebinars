@@ -19,7 +19,13 @@
                 <li class="nav-item"><a class="nav-link" href="/products/">Товары</a></li>
                 <li class="nav-item"><a class="nav-link" href="/categories/">Категории</a></li>
                 <li class="nav-item"><a class="nav-link" href="/import/index">Импорт товаров</a></li>
-                <li class="nav-item"><a class="nav-link" href="/user/register">Регистрация</a></li>
+                <li class="nav-item">
+                    {if $user}
+                        <span class="nav-link">{$user->getName()}</span>
+                        {else}
+                        <a class="nav-link" href="/user/register">Регистрация</a>
+                    {/if}
+                </li>
             </ul>
         </div>
     </div>
@@ -27,6 +33,18 @@
 
     <div class="row">
         <div class="col-3">
+            <form method="post" action="/user/login">
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" name="email" class="form-control" id="userEmail">
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Пароль</label>
+                    <input type="password" name="password" class="form-control" id="userPassword">
+                </div>
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </form>
+
             <nav class="nav flex-column nav-pills">
                 {foreach from=$categories_shared item=category}
                 <a class="nav-link {if $current_category.id == $category.id} active{/if}" href="/categories/view?id={$category.id}">{$category.name}</a>

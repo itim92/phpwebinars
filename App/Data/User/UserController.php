@@ -13,15 +13,29 @@ class UserController extends AbstractController
 {
 
     /**
+     * @route("/user/login")
+     */
+    public function login()
+    {
+        return $this->redirect('/products/');
+    }
+
+    /**
      * @route("/user/register")
      */
-    public function register(Request $request, UserRepository $userRepository)
+    public function register(Request $request, UserRepository $userRepository, UserService $userService)
     {
         $data = [];
         if ($request->isPost()) {
 
             try {
                 $user = $this->registerAction();
+                $user->setPassword(
+                    $userService->passwordEncode(
+                        $user->getPassword()
+                    )
+                );
+
                 $userRepository->save($user);
 
                 return $this->redirect('/user/register');
