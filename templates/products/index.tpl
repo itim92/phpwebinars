@@ -44,6 +44,7 @@
             <td>{$product->getPrice()}</td>
             <td>{$product->getAmount()}</td>
             <td class="nobr">
+                <a href='/shop/cart/add?id={$product->getId()}' class="btn btn-success btn-sm">Заказать</a>
                 <a href='/products/edit?id={$product->getId()}' class="btn btn-primary btn-sm">Ред</a>
                 <form action="/products/delete" method="post" class="d-inline"><input type="hidden" name="id"
                                                                                       value="{$product->getId()}"><input
