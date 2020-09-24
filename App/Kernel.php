@@ -27,7 +27,7 @@ class Kernel
 
         $di = new DI\Container();
         $this->di = $di;
-        $di->setMapping(Container::class, $di);
+        $di->addOneMapping(Container::class, $di);
 
         $di->singletone(Config::class, function() {
             $configDir = 'config';
@@ -64,11 +64,20 @@ class Kernel
                 $middleware = $this->di->get($classname);
 
                 if ($middleware instanceof IMiddleware) {
-                    $middleware->run();
+                    $middleware->beforeDispatch();
                 }
             }
 
             $response = (new Dispatcher($this->di))->dispatch();
+
+
+            foreach ($config->di->middlewares as $classname) {
+                $middleware = $this->di->get($classname);
+
+                if ($middleware instanceof IMiddleware) {
+                    $middleware->afterDispatch();
+                }
+            }
 
             echo $response;
         } catch (NotFoundException $e) {

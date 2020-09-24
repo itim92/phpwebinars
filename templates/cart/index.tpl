@@ -21,7 +21,7 @@
             <td>{$cartItem->getAmount()}</td>
             <td>{$cartItem->getTotal()}</td>
             <td class="nobr">
-                <form action="/cart/product/delete" method="post" class="d-inline"><input type="hidden" name="id" value="{$product->getId()}"><input type="submit" value="Уд" class="btn btn-danger btn-sm"></form>
+                <form action="/shop/cart/remove?id={$product->getId()}" method="post" class="d-inline"><input type="hidden" name="id" value="{$product->getId()}"><input type="submit" value="Уд" class="btn btn-danger btn-sm"></form>
             </td>
         </tr>
     {/foreach}

@@ -57,9 +57,7 @@ class Dispatcher
             throw new ControllerDoesNotExistException();
         }
 
-        $controller = $this->di->get($controllerClass, [
-            Route::class => $route,
-        ]);
+        $controller = $this->di->get($controllerClass);
         $controllerMethod = $route->getMethod();
 
         if (!method_exists($controller, $controllerMethod)) {

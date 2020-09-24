@@ -47,7 +47,7 @@ class AuthMiddleware implements IMiddleware
     /**
      * @throws Exception
      */
-    public function run()
+    public function beforeDispatch()
     {
         $this->sessionInit();
         $user = $this->getSessionUser();
@@ -119,7 +119,13 @@ class AuthMiddleware implements IMiddleware
 
     protected function setUser(UserModel $user)
     {
-        $this->di->setMapping(UserModel::class, $user);
+        $this->di->addOneMapping(UserModel::class, $user);
     }
+
+    public function afterDispatch()
+    {
+        // TODO: Implement afterDispatch() method.
+    }
+
 
 }
