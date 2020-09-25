@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DI\Container;
 use App\Http\Request;
 use App\Http\Response;
 use App\Renderer\Renderer;
@@ -33,6 +34,12 @@ abstract class AbstractController
      * @onInit(App\Http\Request)
      */
     protected $request;
+
+    /**
+     * @var Container
+     * @onInit(App\DI\Container)
+     */
+    protected $di;
 
     public function render(string $template, array $data = [])
     {

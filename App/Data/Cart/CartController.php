@@ -16,23 +16,6 @@ class CartController extends AbstractController
      */
     public function index(Cart $cart, ProductRepository $productRepository)
     {
-//        $cart = new Cart();
-
-//        $product = $productRepository->getById(13);
-//        $amount = 2;
-//
-//        $cart->addProduct($amount, $product);
-//        $cart->addProduct($amount, $product);
-
-//        $cart->removeProduct($product);
-
-//        echo "<pre>";
-//        var_dump($cart);
-//        echo "</pre>";
-
-
-
-
         return $this->render('cart/index.tpl', [
             'cart' => $cart,
         ]);

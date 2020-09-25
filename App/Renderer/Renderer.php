@@ -50,11 +50,19 @@ class Renderer
     public function render(string $template, array $data = [])
     {
         foreach ($this->getSharedData() as $key => $value) {
-            $this->_smarty->assign($key, $value);
+            if (is_object($value)) {
+                $this->_smarty->assign_by_ref($key, $value);
+            } else {
+                $this->_smarty->assign($key, $value);
+            }
         }
 
         foreach ($data as $key => $value) {
-            $this->_smarty->assign($key, $value);
+            if (is_object($value)) {
+                $this->_smarty->assign_by_ref($key, $value);
+            } else {
+                $this->_smarty->assign($key, $value);
+            }
         }
 
         return $this->_smarty->fetch($template);

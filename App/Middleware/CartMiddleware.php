@@ -36,7 +36,6 @@ class CartMiddleware implements IMiddleware
             $cart = new Cart();
         }
 
-
         $di->addOneMapping(Cart::class, $cart);
         $this->cart = $cart;
     }
@@ -49,7 +48,7 @@ class CartMiddleware implements IMiddleware
 
     public function afterDispatch()
     {
-        $_SESSION['cart'] = serialize($this->cart);
+        $_SESSION['cart'] = serialize($this->di->get(Cart::class));
     }
 
 
