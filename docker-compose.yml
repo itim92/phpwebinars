@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  database:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1
+      MYSQL_USER: phpwebinars
+      MYSQL_PASSWORD: 1
+      MYSQL_DATABASE: phpwebinars
+    ports: [3306]

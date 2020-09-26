@@ -34,7 +34,7 @@ class Container
      * @return object
      * @throws ReflectionException
      */
-    public function get(string $className, array &$dependencyMapping = null)
+    public function get(string $className, array $dependencyMapping = null)
     {
         if (!is_null($dependencyMapping)) {
             $this->addManyMapping($dependencyMapping);
@@ -103,12 +103,12 @@ class Container
      * @param $value
      * @return $this
      */
-    public function addOneMapping(string $key, &$value) {
+    public function addOneMapping(string $key, $value) {
         if (!is_object($value)) {
             return $this;
         }
 
-        $this->dependencyMapping[$key] =& $value;
+        $this->dependencyMapping[$key] = $value;
 
         return $this;
     }
@@ -190,8 +190,8 @@ class Container
         return $docCommentArray;
     }
 
-    protected function addManyMapping(array &$mapping) {
-        foreach ($mapping as $key => &$value) {
+    protected function addManyMapping(array $mapping) {
+        foreach ($mapping as $key => $value) {
             $this->addOneMapping($key, $value);
         }
     }

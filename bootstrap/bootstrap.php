@@ -14,6 +14,11 @@ define('APP_PUBLIC_DIR', APP_DIR . '/public');
 define('APP_UPLOAD_DIR', APP_PUBLIC_DIR . '/upload');
 define('APP_UPLOAD_PRODUCT_DIR', APP_UPLOAD_DIR . '/products');
 
+
+function dump($var) {
+    echo "<pre>"; var_dump($var); echo "</pre>";
+}
+
 (new Kernel())->run();
 
 
