@@ -1,11 +1,9 @@
 <?php
 
-
 namespace App\Data\Shop\Order;
 
-
-use App\Data\User\UserModel;
-use App\Model\AbstractModel;
+use App\Data\User\UserModel,
+    App\Model\AbstractModel as AM;
 use DateTime;
 
 
@@ -14,7 +12,7 @@ use DateTime;
  * @package App\Data\Shop\Order
  * @Model\Table("orders")
  */
-class OrderModel extends AbstractModel
+class OrderModel extends AM
 {
 
     /**
@@ -43,6 +41,7 @@ class OrderModel extends AbstractModel
 
     /**
      * @var OrderItemModel[]
+     * @Model\Relation("order_id")
      */
     protected $items;
 

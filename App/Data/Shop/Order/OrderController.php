@@ -5,9 +5,13 @@ namespace App\Data\Shop\Order;
 
 
 use App\Controller\AbstractController;
-use App\Data\Product\ProductRepository;
+use App\Data\Product\ProductRepositoryOld;
 use App\Data\User\UserModel;
+use App\Model\AbstractModel;
+use App\Model\ModelAnalyzer;
 use App\Model\ModelManager;
+use App\Model\Proxy\ProxyModelManager;
+use App\Utils\ReflectionUtil;
 
 class OrderController extends AbstractController
 {
@@ -15,16 +19,18 @@ class OrderController extends AbstractController
     /**
      * @route("/order/list")
      */
-    public function index()
+    public function index(OrderRepository $orderRepository)
     {
 
-        return $this->render('shop/order/index.tpl', []);
+        return $this->render('shop/order/index.tpl', [
+            'orders' => $orderRepository->findAll(),
+        ]);
     }
 
     /**
      * @route("/order/create")
      */
-    public function create(ModelManager $manager, ProductRepository $productRepository, UserModel $user = null)
+    public function create(ModelManager $manager, ProductRepositoryOld $productRepository, UserModel $user = null)
     {
         $productsForOrder = [
             [3, 2],
@@ -50,6 +56,27 @@ class OrderController extends AbstractController
         foreach ($order->getItems() as $item) {
             $manager->save($item);
         }
+
+        return $this->redirect("/order/list");
+    }
+
+    /**
+     * @route("/order/update")
+     */
+    public function update(OrderItemRepository $orderItemRepository)
+    {
+
+        /**
+         * @var $orderItem OrderItemModel
+         */
+        $orderItem = $orderItemRepository->find(2);
+
+        $orderItems = $orderItem->getOrder()->getItems();
+        $orderItems = $orderItems[1]->getOrder()->getItems();
+        echo "<pre>"; var_dump("App\Data\Shop\Order\OrderController.php : 64", $orderItems); echo "</pre>";
+
+        exit;
+
 
         return $this->redirect("/order/list");
     }

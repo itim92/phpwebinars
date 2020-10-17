@@ -310,4 +310,15 @@ class Container
         return $arguments;
     }
 
+
+    public function isInstanceOf(string $verifiable, string $reference) {
+        if (!(class_exists($verifiable) && class_exists($reference))) {
+            return false;
+        }
+
+        $class = $this->get($verifiable);
+
+        return $class instanceof $reference;
+    }
+
 }

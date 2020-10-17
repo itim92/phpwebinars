@@ -23,13 +23,13 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @param ProductRepository $productRepository
+     * @param ProductRepositoryOld $productRepository
      * @param Request $request
      * @return mixed
      *
      * @route("/product_list")
      */
-    public function list(ProductRepository $productRepository, Request $request)
+    public function list(ProductRepositoryOld $productRepository, Request $request)
     {
 
         $current_page = $request->getIntFromGet('p', 1);
@@ -52,7 +52,7 @@ class ProductController extends AbstractController
      * @param Request $request
      * @param Response $response
      * @param ProductService $productService
-     * @param ProductRepository $productRepository
+     * @param ProductRepositoryOld $productRepository
      * @param ProductImageService $productImageService
      * @param CategoryService $categoryService
      * @return mixed
@@ -63,7 +63,7 @@ class ProductController extends AbstractController
         Request $request,
         Response $response,
         ProductService $productService,
-        ProductRepository $productRepository,
+        ProductRepositoryOld $productRepository,
         ProductImageService $productImageService,
         CategoryService $categoryService)
     {
@@ -120,7 +120,7 @@ class ProductController extends AbstractController
 
     /**
      * @param Request $request
-     * @param ProductRepository $productRepository
+     * @param ProductRepositoryOld $productRepository
      * @param ProductService $productService
      * @param ProductImageService $productImageService
      * @param CategoryService $categoryService
@@ -128,7 +128,7 @@ class ProductController extends AbstractController
      * @return mixed
      * @throws Exception
      */
-    public function add(Request $request, ProductRepository $productRepository, ProductService $productService, ProductImageService $productImageService, CategoryService $categoryService, Response $response)
+    public function add(Request $request, ProductRepositoryOld $productRepository, ProductService $productService, ProductImageService $productImageService, CategoryService $categoryService, Response $response)
     {
 
         if ($request->isPost()) {

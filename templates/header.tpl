@@ -21,7 +21,7 @@
                 <li class="nav-item"><a class="nav-link" href="/import/index">Импорт товаров</a></li>
                 <li class="nav-item">
                     {if $user}
-                        <span class="nav-link">{$user->getName()}</span>
+                        <span class="nav-link">{$user.name}</span>
                         {else}
                         <a class="nav-link" href="/user/register">Регистрация</a>
                     {/if}

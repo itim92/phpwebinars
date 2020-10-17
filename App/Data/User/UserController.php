@@ -23,7 +23,7 @@ class UserController extends AbstractController
     /**
      * @route("/user/register")
      */
-    public function register(Request $request, UserRepository $userRepository, UserService $userService)
+    public function register(Request $request, UserRepositoryOld $userRepository, UserService $userService)
     {
         $data = [];
         if ($request->isPost()) {

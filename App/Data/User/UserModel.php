@@ -4,33 +4,45 @@
 namespace App\Data\User;
 
 
-class UserModel
+use App\Model\AbstractModel;
+
+/**
+ * Class UserModel
+ * @package App\Data\User
+ * @Model\Table("users")
+ */
+class UserModel extends AbstractModel
 {
     /**
      * @var int
+     * @Model\Id
      */
-    private $id = 0;
+    protected $id = 0;
 
     /**
      * @var string
+     * @Model\TableField
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
+     * @Model\TableField
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
+     * @Model\TableField
      */
-    private $password;
+    protected $password;
 
-    public function __construct(string $name, string $email, string $password)
+//    public function __construct(string $name, string $email, string $password)
+    public function __construct()
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
+//        $this->name = $name;
+//        $this->email = $email;
+//        $this->password = $password;
     }
 
     /**

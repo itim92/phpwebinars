@@ -5,7 +5,7 @@ namespace App\Data\Cart;
 
 
 use App\Controller\AbstractController;
-use App\Data\Product\ProductRepository;
+use App\Data\Product\ProductRepositoryOld;
 use App\Http\Response;
 
 class CartController extends AbstractController
@@ -14,7 +14,7 @@ class CartController extends AbstractController
     /**
      * @route("/shop/cart")
      */
-    public function index(Cart $cart, ProductRepository $productRepository)
+    public function index(Cart $cart, ProductRepositoryOld $productRepository)
     {
         return $this->render('cart/index.tpl', [
             'cart' => $cart,
@@ -25,10 +25,10 @@ class CartController extends AbstractController
      * @route("/shop/cart/add")
      *
      * @param Cart $cart
-     * @param ProductRepository $productRepository
+     * @param ProductRepositoryOld $productRepository
      * @return Response
      */
-    public function addProduct(Cart $cart, ProductRepository $productRepository)
+    public function addProduct(Cart $cart, ProductRepositoryOld $productRepository)
     {
         // /shop/cart/add?id=13
 
@@ -50,10 +50,10 @@ class CartController extends AbstractController
      * @route("/shop/cart/remove")
      *
      * @param Cart $cart
-     * @param ProductRepository $productRepository
+     * @param ProductRepositoryOld $productRepository
      * @return Response
      */
-    public function removeProduct(Cart $cart, ProductRepository  $productRepository)
+    public function removeProduct(Cart $cart, ProductRepositoryOld  $productRepository)
     {
         $id = $this->request->getIntFromGet('id');
 

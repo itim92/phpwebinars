@@ -3,37 +3,50 @@
 namespace App\Data\Product;
 
 use App\Data\Category\CategoryModel;
+use App\Model\AbstractModel;
 
-class ProductModel
+/**
+ * Class ProductModel
+ * @package App\Data\Product
+ *
+ * @Model\Table("products")
+ */
+class ProductModel extends AbstractModel
 {
 
     /**
      * @var int
+     * @Model\Id
      */
     protected $id = 0;
 
     /**
      * @var string
+     * @Model\TableField
      */
     protected $name;
 
     /**
      * @var string
+     * @Model\TableField
      */
     protected $article = '';
 
     /**
      * @var float
+     * @Model\TableField
      */
     protected $price;
 
     /**
      * @var int
+     * @Model\TableField
      */
     protected $amount;
 
     /**
      * @var string
+     * @Model\TableField
      */
     protected $description = '';
 
@@ -47,20 +60,19 @@ class ProductModel
      */
     protected $images = [];
 
-    public function __construct(string $name, float $price, int $amount)
+//    public function __construct(string $name, float $price, int $amount)
+    public function __construct()
     {
-        $this->setName($name);
-        $this->setPrice($price);
-        $this->setAmount($amount);
+//        $this->setName($name);
+//        $this->setPrice($price);
+//        $this->setAmount($amount);
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
+
 
     /**
      * @param int $id
@@ -198,7 +210,8 @@ class ProductModel
         return $this;
     }
 
-    public function addImage(ProductImageModel $productImage): ProductModel {
+    public function addImage(ProductImageModel $productImage): ProductModel
+    {
         $this->images[] = $productImage;
         return $this;
     }

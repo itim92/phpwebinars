@@ -5,16 +5,23 @@
     <thead class="thead-light">
     <tr>
         <th>#</th>
-        <th>Дата создания</th>
-        <th>Сумма заказа</th>
+{*        <th>Дата создания</th>*}
+        <th width="1">Сумма заказа</th>
         <th width="1"></th>
     </tr>
     </thead>
     <tbody>
     {foreach from=$orders item=order}
         <tr>
-            <td>{$order.id}</td>
-            <td>{$order.createdAt}</td>
+            <td>
+                Заказ #{$order.id}
+                <ul>
+                    {foreach from=$order.items item=e}
+                        <li>{$e.product.name} -- {$e.product.price} x {$e.amount} шт. -- {$e.totalSum}</li>
+                    {/foreach}
+                </ul>
+            </td>
+{*            <td>{$order.createdAt}</td>*}
             <td>{$order.totalSum}</td>
             <td class="nobr">
                 <a href='/order/view/{$order.id}' class="btn btn-primary btn-sm">Подробнее</a>

@@ -19,6 +19,16 @@ abstract class AbstractModel implements \ArrayAccess
 //        $reflectionProperty->setAccessible(true);
 //
 //        return $reflectionProperty->getValue($this);
+
+        try {
+            $getter = $this->getGetterName($offset);
+            if (method_exists($this, $getter)) {
+                return $this->{$getter}();
+            }
+        } catch (\Throwable $e) {
+
+        }
+
         return $this->{$offset};
     }
 
@@ -31,4 +41,10 @@ abstract class AbstractModel implements \ArrayAccess
     {
         // TODO: Implement offsetUnset() method.
     }
+
+    protected function getGetterName($offset) {
+        return 'get' . ucfirst($offset);
+    }
+
+    abstract public function getId(): int;
 }

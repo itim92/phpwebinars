@@ -5,7 +5,7 @@ namespace App\Middleware;
 
 
 use App\Data\User\UserModel;
-use App\Data\User\UserRepository;
+use App\Data\User\UserRepositoryOld;
 use App\Data\User\UserService;
 use App\DI\Container;
 use App\Http\Request;
@@ -14,7 +14,7 @@ use Exception;
 class AuthMiddleware implements IMiddleware
 {
     /**
-     * @var UserRepository
+     * @var UserRepositoryOld
      */
     private $userRepository;
     /**
@@ -32,7 +32,7 @@ class AuthMiddleware implements IMiddleware
 
     public function __construct(
         Request $request,
-        UserRepository $userRepository,
+        UserRepositoryOld $userRepository,
         UserService $userService,
         Container $di
     )

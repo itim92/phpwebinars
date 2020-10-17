@@ -13,32 +13,33 @@ use App\Utils\StringUtil;
 
 class ModelManager
 {
-
-    /**
-     * @var DocParser
-     */
-    private $docParser;
-    /**
-     * @var StringUtil
-     */
-    private $stringUtil;
     /**
      * @var ReflectionUtil
      */
     private $reflectionUtil;
 
-    public function __construct(DocParser $docParser, StringUtil $stringUtil, ReflectionUtil  $reflectionUtil)
+    /**
+     * @var ModelAnalyzer
+     */
+    private $modelAnalyzer;
+
+    public function __construct(ModelAnalyzer $modelAnalyzer, ReflectionUtil  $reflectionUtil)
     {
 
-        $this->docParser = $docParser;
-        $this->stringUtil = $stringUtil;
         $this->reflectionUtil = $reflectionUtil;
+        $this->modelAnalyzer = $modelAnalyzer;
     }
 
+
+    /**
+     * @param AbstractModel $model
+     * @return bool
+     * @throws ManyModelIdFieldException
+     */
     public function save(Model $model)
     {
-        $tableName = $this->getTableName($model);
-        $tableFields = $this->getTableFields($model);
+        $tableName = $this->modelAnalyzer->getTableName($model);
+        $tableFields = $this->modelAnalyzer->getTableFields($model);
 
         $tableData = [];
 
@@ -63,94 +64,22 @@ class ModelManager
             }
         }
 
-        $id = Db::insert($tableName, $tableData);
-        $modelIdInfo = $this->getIdField($model);
+        $id = $model->getId();
+        $modelIdInfo = $this->modelAnalyzer->getIdField($model);
 
-        if (!is_null($modelIdInfo)) {
-            $this->reflectionUtil->setPrivatePropertyValue($model, $modelIdInfo['objectProperty'], $id);
+        if (is_null($modelIdInfo)) {
+            return false;
         }
 
-
-//        if ($model instanceof )
-
-//
-//
-//        dump($tableFields);
-//        dump($tableData);
-//        dump($model);
-//        exit;
-
-
-        /**
-         *
-         * Записать в базу данных
-         *  - в какую таблицу записывать
-         *  - Нужно получить список параметров, требуемых для сохранения в базе
-         * Получить id записанной строки
-         */
-    }
-
-    private function getTableName(Model $model)
-    {
-        $reflectionObject = new \ReflectionObject($model);
-        $docComment = $reflectionObject->getDocComment();
-        return $this->docParser->getAnnotationValue('@Model\Table', $docComment);
-    }
-
-    private function getTableFields(Model $model)
-    {
-        return $this->getModelFieldsByAnnotate('@Model\TableField', $model);
-    }
-
-    /**
-     * @param Model $model
-     * @return array|null
-     * @throws ManyModelIdFieldException
-     */
-    private function getIdField(Model $model) {
-        $fields = $this->getModelFieldsByAnnotate('@Model\Id', $model);
-
-        if (count($fields) > 1) {
-            $message = 'class ' . get_class($model) . ' can have only one Model\Id annotate';
-            throw new ManyModelIdFieldException($message);
+        if ($id) {
+            $id = Db::insert($tableName, $tableData);
+            $this->modelAnalyzer->setId($model, $id);
+        } else {
+            Db::update($tableName, $tableData, $modelIdInfo['tableProperty'] . " = '$id'");
         }
 
-        if (empty($fields)) {
-            return null;
-        }
-
-        $key = array_key_first($fields);
-        $value = $fields[$key];
-
-        return [
-            'objectProperty' => $key,
-            'tableProperty' => $value,
-        ];
+        return true;
     }
 
-    private function getModelFieldsByAnnotate(string $annotate, Model $model) {
-        $fields = [];
 
-        $reflectionObject = new \ReflectionObject($model);
-        foreach ($reflectionObject->getProperties() as $property) {
-            $docComment = $property->getDocComment();
-            $fieldAnnotate = $annotate;
-
-            if (!$this->docParser->isHasAnnotate($fieldAnnotate, $docComment)) {
-                continue;
-            }
-
-            $propertyName = $property->getName();
-            $field = $this->docParser->getAnnotationValue($fieldAnnotate, $docComment);
-
-            if (empty($field)) {
-                $field = $property->getName();
-            }
-
-
-            $fields[$propertyName] = $this->stringUtil->camelToSnake($field);
-        }
-
-        return $fields;
-    }
 }
